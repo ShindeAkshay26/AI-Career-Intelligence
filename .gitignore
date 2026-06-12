@@ -1,0 +1,26 @@
+# Python
+ai-env/
+venv/
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Models
+*.pkl
+*.joblib
+
+# Node
+node_modules/
+
+# VS Code
+.vscode/
+
+# Build
+dist/
+build/
+
+# OS
+Thumbs.db
+.DS_Store
