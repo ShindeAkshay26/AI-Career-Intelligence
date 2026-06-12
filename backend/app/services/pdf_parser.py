@@ -14,4 +14,8 @@ def extract_text_from_pdf(pdf_path):
 
     text = re.sub(r"\s+", " ", text)
 
-    return text.strip()
+    return {
+        "file_name": pdf_path.split("\\")[-1],
+        "text": text.strip(),
+        "char_count": len(text)
+    }
