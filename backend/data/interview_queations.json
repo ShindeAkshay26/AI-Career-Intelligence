@@ -1,0 +1,22 @@
+{
+  "Python": [
+    "What is a decorator?",
+    "Explain generators.",
+    "What is the GIL?"
+  ],
+
+  "SQL": [
+    "What is a window function?",
+    "Difference between WHERE and HAVING?"
+  ],
+
+  "Docker": [
+    "What are Docker volumes?",
+    "Difference between image and container?"
+  ],
+
+  "AWS": [
+    "Explain S3.",
+    "What is IAM?"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "Data Engineer": [
+    "Python",
+    "SQL",
+    "PySpark",
+    "Azure",
+    "Databricks",
+    "Snowflake",
+    "Microsoft Fabric"
+  ],
+
+  "AI Engineer": [
+    "Python",
+    "Machine Learning",
+    "Deep Learning",
+    "Transformers",
+    "RAG",
+    "FAISS",
+    "LangChain",
+    "LLM"
+  ],
+
+  "Cloud Engineer": [
+    "AWS",
+    "Azure",
+    "Docker",
+    "Kubernetes",
+    "Terraform",
+    "CI/CD"
+  ],
+
+  "Java Developer": [
+    "Java",
+    "Spring Boot",
+    "SQL",
+    "Git"
+  ]
+}
