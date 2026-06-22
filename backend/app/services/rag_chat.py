@@ -14,12 +14,16 @@ from app.services.resume_chat import (
     ask_resume
 )
 
-
 class ResumeRAG:
 
-    def __init__(self, resume_path):
+    def __init__(
+        self,
+        resume_path=None,
+        resume_text=None
+    ):
 
         self.resume_path = resume_path
+        self.resume_text = resume_text
 
         self.store = None
 
@@ -27,11 +31,17 @@ class ResumeRAG:
 
     def _build_vector_store(self):
 
-        resume = extract_text_from_pdf(
-            self.resume_path
-        )
+        if self.resume_text:
 
-        text = resume["text"]
+            text = self.resume_text
+
+        else:
+
+            resume = extract_text_from_pdf(
+                self.resume_path
+            )
+
+            text = resume["text"]
 
         chunks = chunk_text(text)
 
