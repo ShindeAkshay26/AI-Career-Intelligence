@@ -1,24 +1,51 @@
-import json
-import random
+import requests
 
-with open("data/interview_questions.json") as f:
-    QUESTION_BANK = json.load(f)
 
-def generate_questions(skills):
+def generate_interview_questions(
+    role,
+    skills,
+    missing_skills,
+    job_description,
+    summary
+):
 
-    questions = []
+    prompt = f"""
+You are a Senior Technical Interviewer.
 
-    for skill in skills:
+Candidate Information:
 
-        if skill in QUESTION_BANK:
+Role:
+{role}
 
-            question = random.choice(
-                QUESTION_BANK[skill]
-            )
+Resume Skills:
+{skills}
 
-            questions.append({
-                "skill": skill,
-                "question": question
-            })
+Missing Skills:
+{missing_skills}
 
-    return questions
+Resume Summary:
+{summary}
+
+Job Description:
+{job_description}
+
+Generate 10 interview questions.
+
+Rules:
+1. 5 questions should be based on resume skills.
+2. 3 questions should be based on job description requirements.
+3. 2 questions should focus on missing skills.
+4. Questions should be realistic technical interview questions.
+5. Return only numbered questions.
+"""
+
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "llama3",
+            "prompt": prompt,
+            "stream": False
+        }
+    )
+
+    return response.json()["response"]
