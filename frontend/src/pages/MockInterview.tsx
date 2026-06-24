@@ -4,8 +4,12 @@ import api from "../api/api";
 function MockInterview() {
   const [file, setFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
-  const [questions, setQuestions] = useState("");
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [currentQuestion, setCurrentQuestion] =
+    useState(0);
+
   const [role, setRole] = useState("");
+
   const [loading, setLoading] = useState(false);
 
   const generateInterview = async () => {
@@ -37,7 +41,17 @@ function MockInterview() {
       );
 
       setRole(response.data.role);
-      setQuestions(response.data.questions);
+
+      const questionArray =
+        response.data.questions
+          .split("\n")
+          .filter(
+            (q: string) =>
+              /^\d+\./.test(q.trim())
+          );
+
+      setQuestions(questionArray);
+      setCurrentQuestion(0);
 
     } catch (error) {
       console.error(error);
@@ -126,21 +140,15 @@ function MockInterview() {
         </h3>
       )}
 
-      {questions && (
+      {questions.length > 0 && (
         <div
           style={{
             marginTop: "30px",
-            background: "#f1f5f9",
+            background: "#e2e8f0",
             padding: "24px",
             borderRadius: "16px",
-            boxShadow:
-              "0 4px 15px rgba(0,0,0,0.15)",
           }}
         >
-          <h2>
-            🎯 Target Role: {role}
-          </h2>
-
           <h2
             style={{
               textAlign: "center",
@@ -150,50 +158,60 @@ function MockInterview() {
             🎯 Target Role: {role}
           </h2>
 
-          <div
+          <h3
             style={{
-              display: "flex",
-              justifyContent: "space-around",
-              marginTop: "20px",
-              marginBottom: "30px",
+              textAlign: "center",
             }}
           >
-            <div>
-              <h3>📊 Questions</h3>
-              <p>10</p>
-            </div>
+            Question {currentQuestion + 1}
+            / {questions.length}
+          </h3>
 
-            <div>
-              <h3>🎤 Interview Type</h3>
-              <p>AI Generated</p>
-            </div>
+          <div
+            style={{
+              background: "white",
+              padding: "20px",
+              borderRadius: "12px",
+              marginTop: "20px",
+            }}
+          >
+            {questions[currentQuestion]}
           </div>
 
           <div
             style={{
-              background: "#e2e8f0",
-              padding: "20px",
-              borderRadius: "12px",
+              textAlign: "center",
+              marginTop: "20px",
             }}
           >
-            <h3
-              style={{
-                textAlign: "center",
-                marginBottom: "20px",
-              }}
-            >
-              Generated Interview Questions
-            </h3>
+            {currentQuestion <
+questions.length - 1 ? (
 
-            <div
-              style={{
-                whiteSpace: "pre-wrap",
-                lineHeight: "2",
-                color: "#1f2937",
-              }}
-            >
-              {questions}
-            </div>
+                <button
+                  onClick={() =>
+                    setCurrentQuestion(
+                      currentQuestion + 1
+                    )
+                  }
+                >
+                  Next Question
+                </button>
+
+              ) : (
+
+                <button
+                  style={{
+                    background: "#16a34a",
+                    color: "white",
+                    padding: "10px 20px",
+                    border: "none",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Submit Interview
+                </button>
+
+              )}
           </div>
         </div>
       )}

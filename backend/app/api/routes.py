@@ -10,6 +10,9 @@ from app.services.interview_generator import (
 from app.services.jd_matcher import (
     calculate_jd_match
 )
+from app.services.adaptive_interview import (
+    generate_next_question
+)
 import tempfile
 import os
 
@@ -208,3 +211,21 @@ async def generate_interview_api(
 
         if temp_path and os.path.exists(temp_path):
             os.remove(temp_path)
+
+
+@router.post("/next-question")
+async def next_question_api(
+    request: dict
+):
+
+    question = generate_next_question(
+        request["role"],
+        request["summary"],
+        request["job_description"],
+        request["history"],
+        request["question_number"]
+    )
+
+    return {
+        "question": question
+    }
