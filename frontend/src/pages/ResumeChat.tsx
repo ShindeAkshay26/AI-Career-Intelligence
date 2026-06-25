@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/api";
 
-function ResumeChat() {
+function ResumeChat({ setPage }: any) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -62,6 +62,29 @@ function ResumeChat() {
       >
         Ask questions about the uploaded resume
       </p>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "24px",
+        }}
+      >
+        <button
+          onClick={() => setPage("analysis")}
+          style={{
+            background: "#2563eb",
+            color: "white",
+            border: "none",
+            borderRadius: "10px",
+            padding: "10px 18px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          ← Back to Resume
+        </button>
+      </div>
 
       <div
         style={{

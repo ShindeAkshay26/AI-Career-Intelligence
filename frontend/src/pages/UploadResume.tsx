@@ -1,11 +1,16 @@
 import { useState } from "react";
 import api from "../api/api";
 
-function UploadResume() {
+function UploadResume({
+  setPage,
+  resumeData,
+  setResumeData,
+  jobDescription,
+  setJobDescription,
+  jdResult,
+  setJdResult,
+}: any) {
   const [file, setFile] = useState<File | null>(null);
-  const [jobDescription, setJobDescription] = useState("");
-  const [jdResult, setJdResult] = useState<any>(null);
-  const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
   const uploadResume = async () => {
@@ -27,14 +32,12 @@ function UploadResume() {
         }
       );
 
-      setResult(response.data);
+      setResumeData(response.data);
+      setJobDescription(jobDescription);
 
       if (jobDescription.trim()) {
-
         const jdFormData = new FormData();
-
         jdFormData.append("file", file);
-
         jdFormData.append(
           "job_description",
           jobDescription
@@ -60,7 +63,20 @@ function UploadResume() {
     setLoading(false);
   };
 
-  const atsScore = result?.ats_analysis?.score || 0;
+  const atsScore = resumeData?.ats_analysis?.score || 0;
+
+
+  const featureButtonStyle = {
+    width: "220px",
+    padding: "16px",
+    background: "#2563eb",
+    color: "white",
+    border: "none",
+    borderRadius: "12px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    fontSize: "15px",
+  } as const;
 
   const atsColor =
     atsScore >= 90
@@ -155,8 +171,45 @@ function UploadResume() {
           </p>
         )}
       </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "20px",
+          margin: "35px 0",
+          flexWrap: "wrap",
+        }}
+      >
+        <button
+          onClick={() => setPage("analysis")}
+          style={featureButtonStyle}
+        >
+          📊 Resume Analysis
+        </button>
 
-      {result && (
+        <button
+          onClick={() => setPage("chat")}
+          style={featureButtonStyle}
+        >
+          💬 Resume Chat
+        </button>
+
+        <button
+          onClick={() => setPage("interview")}
+          style={featureButtonStyle}
+        >
+          🎯 Mock Interview
+        </button>
+
+        <button
+          onClick={() => setPage("adaptive")}
+          style={featureButtonStyle}
+        >
+          🎙 Adaptive Interview
+        </button>
+      </div>
+      
+      {resumeData && (
         <>
           <div
             style={{
@@ -183,7 +236,7 @@ function UploadResume() {
                   color: "#2563eb",
                 }}
               >
-                {result.predicted_role}
+                {resumeData.predicted_role}
               </h2>
             </div>
 
@@ -235,28 +288,59 @@ function UploadResume() {
                 textAlign: "center",
               }}
             >
-              {result.skills.map((skill: string) => (
-                <span
-                  key={skill}
-                  style={{
-                    display: "inline-block",
-                    padding: "10px 16px",
-                    margin: "6px",
-                    borderRadius: "25px",
-                    background: "#2563eb",
-                    color: "white",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
+            {resumeData.skills?.map((skill: string) => (
+              <span
+                key={skill}
+                style={{
+                  display: "inline-block",
+                  padding: "10px 16px",
+                  margin: "6px",
+                  borderRadius: "25px",
+                  background: "#2563eb",
+                  color: "white",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                {skill}
+              </span>
+            ))}
           </div>
+        </div>
 
+        <div
+          style={{
+            padding: "24px",
+            background: "#f1f5f9",
+            color: "#1f2937",
+            borderRadius: "16px",
+            boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+          }}
+        >
+          <h3
+            style={{
+              textAlign: "center",
+              marginBottom: "20px",
+            }}
+          >
+            📝 Resume Summary
+          </h3>
+
+          <p
+            style={{
+              lineHeight: "2",
+              fontSize: "16px",
+              textAlign: "center",
+            }}
+          >
+            {resumeData.summary}
+          </p>
+        </div>
+
+        {jdResult && (
           <div
             style={{
+              marginTop: "20px",
               padding: "24px",
               background: "#f1f5f9",
               color: "#1f2937",
@@ -267,105 +351,73 @@ function UploadResume() {
             <h3
               style={{
                 textAlign: "center",
-                marginBottom: "20px",
               }}
             >
-              📝 Resume Summary
+              🎯 Job Description Match
             </h3>
 
-            <p
-                style={{
-                  lineHeight: "2",
-                  fontSize: "16px",
-                  textAlign: "center",
-                }}
-              >
-                {result.summary}
-              </p>
-              </div>
+            <h1
+              style={{
+                textAlign: "center",
+                color:
+                  jdResult.match_score >= 80
+                    ? "#16a34a"
+                    : "#ea580c",
+              }}
+            >
+              {jdResult.match_score}%
+            </h1>
 
-              {jdResult && (
-                <div
-                  style={{
-                    marginTop: "20px",
-                    padding: "24px",
-                    background: "#f1f5f9",
-                    color: "#1f2937",
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
-                  }}
-                >
-                  <h3
+            <h4>✅ Matching Skills</h4>
+
+            <div>
+              {jdResult.matching_skills.map(
+                (skill: string) => (
+                  <span
+                    key={skill}
                     style={{
-                      textAlign: "center",
+                      display: "inline-block",
+                      padding: "8px 14px",
+                      margin: "5px",
+                      borderRadius: "20px",
+                      background: "#16a34a",
+                      color: "white",
                     }}
                   >
-                    🎯 Job Description Match
-                  </h3>
+                    {skill}
+                  </span>
+                )
+              )}
+            </div>
 
-                  <h1
+            <h4 style={{ marginTop: "20px" }}>
+              ❌ Missing Skills
+            </h4>
+
+            <div>
+              {jdResult.missing_skills.map(
+                (skill: string) => (
+                  <span
+                    key={skill}
                     style={{
-                      textAlign: "center",
-                      color:
-                        jdResult.match_score >= 80
-                          ? "#16a34a"
-                          : "#ea580c",
+                      display: "inline-block",
+                      padding: "8px 14px",
+                      margin: "5px",
+                      borderRadius: "20px",
+                      background: "#dc2626",
+                      color: "white",
                     }}
                   >
-                    {jdResult.match_score}%
-                  </h1>
-
-                  <h4>✅ Matching Skills</h4>
-
-                  <div>
-                    {jdResult.matching_skills.map(
-                      (skill: string) => (
-                        <span
-                          key={skill}
-                          style={{
-                            display: "inline-block",
-                            padding: "8px 14px",
-                            margin: "5px",
-                            borderRadius: "20px",
-                            background: "#16a34a",
-                            color: "white",
-                          }}
-                        >
-                          {skill}
-                        </span>
-                      )
-                    )}
-                  </div>
-
-                  <h4 style={{ marginTop: "20px" }}>
-                    ❌ Missing Skills
-                  </h4>
-
-                  <div>
-                    {jdResult.missing_skills.map(
-                      (skill: string) => (
-                        <span
-                          key={skill}
-                          style={{
-                            display: "inline-block",
-                            padding: "8px 14px",
-                            margin: "5px",
-                            borderRadius: "20px",
-                            background: "#dc2626",
-                            color: "white",
-                          }}
-                        >
-                          {skill}
-                        </span>
-                      )
-                    )}
-                  </div>
-                </div>
+                    {skill}
+                  </span>
+                )
               )}
-
-              </>
-              )}
-    </div>
+            </div>
+          </div>
+        )}
+      </>
+    )}
+  </div>
   );
 }
 

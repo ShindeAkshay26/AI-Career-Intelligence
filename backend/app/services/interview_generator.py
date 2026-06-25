@@ -32,11 +32,12 @@ Job Description:
 Generate 10 interview questions.
 
 Rules:
-1. 5 questions should be based on resume skills.
-2. 3 questions should be based on job description requirements.
-3. 2 questions should focus on missing skills.
-4. Questions should be realistic technical interview questions.
-5. Return only numbered questions.
+1. If resume skills are unavailable, generate general technical questions for the role.
+2. 5 questions should be based on resume skills when available.
+3. 3 questions should be based on job description requirements when available.
+4. 2 questions should focus on missing skills when available.
+5. Questions should be realistic technical interview questions.
+6. Return only numbered questions.
 """
 
     response = requests.post(

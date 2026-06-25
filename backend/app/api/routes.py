@@ -7,6 +7,9 @@ from fastapi import (
 from app.services.interview_generator import (
     generate_interview_questions
 )
+from app.services.interview_evaluator import (
+    evaluate_interview
+)
 from app.services.jd_matcher import (
     calculate_jd_match
 )
@@ -158,59 +161,25 @@ async def jd_match_api(
 
 @router.post("/generate-interview")
 async def generate_interview_api(
-    file: UploadFile = File(...),
-    job_description: str = Form(...)
+    role: str = Form(...)
 ):
 
-    temp_path = None
+    summary = f"Technical interview questions for {role}."
+    skills = []
+    missing_skills = []
 
-    try:
+    questions = generate_interview_questions(
+        role,
+        skills,
+        missing_skills,
+        "",
+        summary
+    )
 
-        with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=".pdf"
-        ) as temp:
-
-            content = await file.read()
-
-            temp.write(content)
-
-            temp_path = temp.name
-
-        resume = extract_text_from_pdf(
-            temp_path
-        )
-
-        text = resume["text"]
-
-        role = predict_category(text)
-
-        skills = extract_skills(text)
-
-        summary = generate_summary(text)
-
-        jd_result = calculate_jd_match(
-            text,
-            job_description
-        )
-
-        questions = generate_interview_questions(
-            role,
-            skills,
-            jd_result["missing_skills"],
-            job_description,
-            summary
-        )
-
-        return {
-            "role": role,
-            "questions": questions
-        }
-
-    finally:
-
-        if temp_path and os.path.exists(temp_path):
-            os.remove(temp_path)
+    return {
+        "role": role,
+        "questions": questions
+    }
 
 
 @router.post("/next-question")
@@ -228,4 +197,21 @@ async def next_question_api(
 
     return {
         "question": question
+    }
+
+
+@router.post("/evaluate-interview")
+async def evaluate_interview_api(
+    request: dict
+):
+
+    result = evaluate_interview(
+        request["role"],
+        request["summary"],
+        request["job_description"],
+        request["history"]
+    )
+
+    return {
+        "evaluation": result
     }
