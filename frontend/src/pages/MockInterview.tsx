@@ -5,6 +5,14 @@ function MockInterview({ setPage, resumeData }: any) {
   const [role, setRole] = useState(
     resumeData?.predicted_role || ""
   );
+  const [interviewType, setInterviewType] =
+    useState("Technical");
+
+  const [difficulty, setDifficulty] =
+    useState("Medium");
+
+  const [questionCount, setQuestionCount] =
+    useState(10);
   const [questions, setQuestions] = useState<string[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");

@@ -5,6 +5,12 @@ function ResumeChat({ setPage }: any) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const suggestions = [
+    "Explain my ATS Score",
+    "What skills are missing?",
+    "Improve my Resume Summary",
+    "How can I improve my JD Match?",
+  ];
 
   const askQuestion = async () => {
     if (!question.trim()) return;
@@ -14,8 +20,18 @@ function ResumeChat({ setPage }: any) {
     setLoading(true);
 
     try {
+      const resumeText =
+        localStorage.getItem("resume_text") || "";
+
+      const analysis =
+        JSON.parse(
+          localStorage.getItem("resume_analysis") || "{}"
+        );
+
       const response = await api.post("/chat", {
         question: currentQuestion,
+        resume_text: resumeText,
+        analysis,
       });
 
       setMessages((prev) => [
@@ -50,7 +66,7 @@ function ResumeChat({ setPage }: any) {
           marginBottom: "20px",
         }}
       >
-        🤖 Resume AI Assistant
+        🤖 Resume AI Guide
       </h1>
 
       <p
@@ -60,7 +76,7 @@ function ResumeChat({ setPage }: any) {
           marginBottom: "30px",
         }}
       >
-        Ask questions about the uploaded resume
+        Ask anything about your resume, ATS score, skills, career path, or job description.
       </p>
 
       <div
@@ -85,7 +101,33 @@ function ResumeChat({ setPage }: any) {
           ← Back to Resume
         </button>
       </div>
-
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                flexWrap: "wrap",
+                gap: "10px",
+                marginBottom: "25px",
+              }}
+            >
+              {suggestions.map((item) => (
+                <button
+                  key={item}
+                  onClick={() => setQuestion(item)}
+                  style={{
+                    padding: "10px 18px",
+                    borderRadius: "999px",
+                    border: "1px solid #2563eb",
+                    background: "white",
+                    color: "#2563eb",
+                    cursor: "pointer",
+                    fontWeight: "600",
+                  }}
+                >
+                  ✨ {item}
+                </button>
+              ))}
+            </div>
       <div
         style={{
           display: "flex",
@@ -137,6 +179,26 @@ function ResumeChat({ setPage }: any) {
         >
           🤔 Thinking...
         </p>
+      )}
+
+      {messages.length === 0 && (
+        <div
+          style={{
+            marginTop: "40px",
+            textAlign: "center",
+            color: "#64748b",
+            padding: "40px",
+            border: "1px dashed #cbd5e1",
+            borderRadius: "16px",
+          }}
+        >
+          <h3>💬 AI Career Guide</h3>
+
+          <p>
+            Ask questions about your resume, ATS score,
+            skills, projects, or interview preparation.
+          </p>
+        </div>
       )}
 
       {messages.length > 0 && (
@@ -191,7 +253,17 @@ function ResumeChat({ setPage }: any) {
                     lineHeight: "1.8",
                   }}
                 >
-                  🤖 {msg.answer}
+                  <div
+                      style={{
+                        fontWeight: "bold",
+                        color: "#2563eb",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      🤖 AI Career Coach
+                    </div>
+
+                    <div>{msg.answer}</div>
                 </div>
               </div>
             </div>

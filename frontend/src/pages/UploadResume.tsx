@@ -32,7 +32,32 @@ function UploadResume({
         }
       );
 
-      setResumeData(response.data);
+      const resume = response.data;
+      console.log(resume);
+
+      setResumeData(resume);
+
+      localStorage.setItem(
+        "resume_analysis",
+        JSON.stringify(resume)
+      );
+      
+      console.log(
+        JSON.parse(
+          localStorage.getItem("resume_analysis") || "{}"
+        )
+      );
+
+      localStorage.setItem(
+        "resume_data",
+        JSON.stringify(resume)
+      );
+
+      localStorage.setItem(
+        "resume_text",
+        resume.resume_text
+      );
+
       setJobDescription(jobDescription);
 
       if (jobDescription.trim()) {
@@ -94,17 +119,37 @@ function UploadResume({
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1
+      <div
         style={{
           textAlign: "center",
-          color: "#2563eb",
-          marginBottom: "30px",
-          fontSize: "56px",
-          fontWeight: "bold",
+          marginBottom: "35px",
         }}
       >
-        AI Career Intelligence
-      </h1>
+        <h1
+          style={{
+            fontSize: "42px",
+            marginBottom: "10px",
+            color: "#2563eb",
+            fontWeight: "700",
+          }}
+        >
+          🚀 AI Career Intelligence
+        </h1>
+
+        <p
+          style={{
+            fontSize: "18px",
+            color: "#64748b",
+            maxWidth: "750px",
+            margin: "0 auto",
+            lineHeight: "1.8",
+          }}
+        >
+          Analyze your resume, compare it with a Job Description,
+          prepare for interviews, and improve your chances of
+          landing your dream job using AI.
+        </p>
+      </div>
 
       <div
         style={{
@@ -208,7 +253,7 @@ function UploadResume({
           🎙 Adaptive Interview
         </button>
       </div>
-      
+
       {resumeData && (
         <>
           <div
